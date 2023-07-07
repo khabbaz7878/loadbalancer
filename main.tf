@@ -82,7 +82,6 @@ resource "google_compute_backend_service" "backend_updateData" {
 }
 resource "google_compute_url_map" "samiloadbalancer" {
   default_service = google_compute_backend_service.backend_fetchData.self_link
-  project_id=var.project_id
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
     path_matcher = "path-matcher-fetchdata"
@@ -122,4 +121,17 @@ resource "google_compute_ssl_certificate" "newcertificate" {
   project = var.project_id
   certificate = var.certificate
   private_key = var.private_key
+}
+resource "google_compute_managed_ssl_certificate" "default" {
+  provider = google-beta
+  project  = var.project_id
+  name     = var.random_certificate_suffix == true ? random_id.certificate[0].hex : "${var.name}-cert"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  managed {
+    domains = var.managed_ssl_certificate_domains
+  }
 }

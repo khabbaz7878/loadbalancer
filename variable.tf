@@ -15,3 +15,8 @@ variable "private_key" {
   type        = string
   default     = null
 }
+variable "managed_ssl_certificate_domains"{
+  description = "Create Google-managed SSL certificates for specified domains. Requires `ssl` to be set to `true` and `use_ssl_certificates` set to `false`."
+  type        = list(string)
+  default     = []
+}
