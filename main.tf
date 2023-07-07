@@ -117,11 +117,7 @@ resource "google_compute_url_map" "samiloadbalancer" {
   project = "sami-islam-project101-dev"
 }
 
-resource "google_compute_ssl_certificate" "newcertificate" {
-  project = var.project_id
-  certificate = var.certificate
-  private_key = var.private_key
-}
+
 resource "google_compute_managed_ssl_certificate" "default" {
   provider = google-beta
   project  = var.project_id
