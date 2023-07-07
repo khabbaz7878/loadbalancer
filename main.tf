@@ -80,7 +80,7 @@ resource "google_compute_backend_service" "backendupdatedata" {
     group = google_compute_region_network_endpoint_group.negupdatedata2.self_link
   }
 }
-resource "google_compute_url_map" "samiloadbalancer" {
+resource "google_compute_url_map" "loadbalancertest" {
   default_service = google_compute_backend_service.backendfetchdata.self_link
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
