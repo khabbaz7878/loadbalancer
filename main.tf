@@ -44,7 +44,7 @@ resource "google_compute_region_network_endpoint_group" "negupdatedata2" {
   }
   project = var.project_id
 }
-resource "google_compute_backend_service" "backendfetchData" {
+resource "google_compute_backend_service" "backendfetchdata" {
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
   locality_lb_policy              = "ROUND_ROBIN"
@@ -62,7 +62,7 @@ resource "google_compute_backend_service" "backendfetchData" {
     group = google_compute_region_network_endpoint_group.negfetchdata2.self_link
   }
 }
-resource "google_compute_backend_service" "backendupdateData" {
+resource "google_compute_backend_service" "backendupdatedata" {
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
   locality_lb_policy              = "ROUND_ROBIN"
@@ -81,7 +81,7 @@ resource "google_compute_backend_service" "backendupdateData" {
   }
 }
 resource "google_compute_url_map" "samiloadbalancer" {
-  default_service = google_compute_backend_service.backendfetchData.self_link
+  default_service = google_compute_backend_service.backendfetchdata.self_link
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
     path_matcher = "path-matcher-fetchdata"
