@@ -101,17 +101,19 @@ resource "google_compute_url_map" "serverlesshttploadbalancer" {
     path_rule {
       paths   = ["/fetchdata"]
       service = google_compute_backend_service.backendfetchdata.self_link
+
+    path_rule {
+      paths   = ["/updatedata"]
+      service = google_compute_backend_service.backendupdatedata.self_link
+    
     }
-  }
+/*  }
 
   path_matcher {
     default_service = google_compute_backend_service.backendupdatedata.self_link
     name            = "path-matcher-updatedata"
 
-    path_rule {
-      paths   = ["/updatedata"]
-      service = google_compute_backend_service.backendupdatedata.self_link
-    }
+    }*/
   }
 
   project = "sami-islam-project101-dev"
