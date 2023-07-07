@@ -27,7 +27,7 @@ resource "google_compute_region_network_endpoint_group" "defaultneg2" {
   project = var.project_id
 }
 resource "google_compute_region_network_endpoint_group" "negfetchdata1" {
-  name                  = "defaultneg2"
+  name                  = "negfetchdata1"
   network_endpoint_type = "SERVERLESS"
   region                = "us-central1"
   project = var.project_id
