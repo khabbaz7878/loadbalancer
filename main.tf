@@ -38,7 +38,7 @@ resource "google_compute_region_network_endpoint_group" "negupdatedata1" {
 resource "google_compute_region_network_endpoint_group" "negupdatedata2" {
   name                  = "negupdatedata2"
   network_endpoint_type = "SERVERLESS"
-  region                = "us-central1"
+  region                = "northamerica-northeast1"
   cloud_function {
     function = "function1"
   }
