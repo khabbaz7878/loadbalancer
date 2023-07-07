@@ -48,7 +48,7 @@ resource "google_compute_backend_service" "backendfetchdata" {
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
   locality_lb_policy              = "ROUND_ROBIN"
-  name                            = "backendfetchData"
+  name                            = "backendfetchdata"
   port_name                       = "https"
   project                         = "sami-islam-project101-dev"
   protocol                        = "HTTPS"
@@ -66,7 +66,7 @@ resource "google_compute_backend_service" "backendupdatedata" {
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
   locality_lb_policy              = "ROUND_ROBIN"
-  name                            = "backend_updateData"
+  name                            = "backendupdatedata"
   port_name                       = "https"
   project                         = "sami-islam-project101-dev"
   protocol                        = "HTTPS"
