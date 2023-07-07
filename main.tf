@@ -115,6 +115,7 @@ resource "google_compute_url_map" "serverlesshttploadbalancer" {
 
     }*/
   }
+  }
 
   project = "sami-islam-project101-dev"
 }
