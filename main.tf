@@ -95,22 +95,22 @@ resource "google_compute_url_map" "samiloadbalancer" {
   name = "samiloadbalancer"
 
   path_matcher {
-    default_service = google_compute_backend_service.backendfetchData.self_link
+    default_service = google_compute_backend_service.backendfetchdata.self_link
     name            = "path-matcher-fetchdata"
 
     path_rule {
       paths   = ["/fetchdata"]
-      service = google_compute_backend_service.backendfetchData.self_link
+      service = google_compute_backend_service.backendfetchdata.self_link
     }
   }
 
   path_matcher {
-    default_service = google_compute_backend_service.backendupdateData.self_link
+    default_service = google_compute_backend_service.backendupdatedata.self_link
     name            = "path-matcher-updatedata"
 
     path_rule {
       paths   = ["/updatedata"]
-      service = google_compute_backend_service.backendupdateData.self_link
+      service = google_compute_backend_service.backendupdatedata.self_link
     }
   }
 
