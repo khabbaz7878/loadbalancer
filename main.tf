@@ -54,7 +54,6 @@ resource "google_compute_backend_service" "backend_fetchData" {
   protocol                        = "HTTPS"
   session_affinity                = "NONE"
   timeout_sec                     = 30
-  project_id=var.project_id
     backend {
     group = google_compute_region_network_endpoint_group.negfetchdata1.self_link
   }
@@ -73,7 +72,6 @@ resource "google_compute_backend_service" "backend_updateData" {
   protocol                        = "HTTPS"
   session_affinity                = "NONE"
   timeout_sec                     = 30
-  project_id=var.project_id
     backend {
     group = google_compute_region_network_endpoint_group.negupdatedata1.self_link
   }
