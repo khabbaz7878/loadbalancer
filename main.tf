@@ -80,7 +80,7 @@ resource "google_compute_backend_service" "backendupdatedata" {
     group = google_compute_region_network_endpoint_group.negupdatedata2.self_link
   }
 }
-resource "google_compute_url_map" "loadbalancertest" {
+resource "google_compute_url_map" "serverlesshttploadbalancer" {
   default_service = google_compute_backend_service.backendfetchdata.self_link
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
@@ -89,10 +89,10 @@ resource "google_compute_url_map" "loadbalancertest" {
 
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
-    path_matcher = "path-matcher-1"
+    path_matcher = "path-matcher-updatedata"
   }
 
-  name = "loadbalancertest"
+  name = "serverlesshttploadbalancer"
 
   path_matcher {
     default_service = google_compute_backend_service.backendfetchdata.self_link
