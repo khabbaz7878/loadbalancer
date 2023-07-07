@@ -92,7 +92,7 @@ resource "google_compute_url_map" "serverlesshttploadbalancer" {
     path_matcher = "path-matcher-updatedata"
   }
 
-  name = "serverlesshttploadbalancer"
+  //name = "serverlesshttploadbalancer"
 
   path_matcher {
     default_service = google_compute_backend_service.backendfetchdata.self_link
