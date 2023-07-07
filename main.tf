@@ -121,7 +121,7 @@ resource "google_compute_url_map" "samiloadbalancer" {
 resource "google_compute_managed_ssl_certificate" "default" {
   provider = google-beta
   project  = var.project_id
-  name     = "sami_islam_managed_certificate"
+  name     = "samiislammanagedcertificate"
 
   lifecycle {
     create_before_destroy = true
