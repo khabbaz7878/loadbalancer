@@ -125,7 +125,7 @@ resource "google_compute_ssl_certificate" "newcertificate" {
 resource "google_compute_managed_ssl_certificate" "default" {
   provider = google-beta
   project  = var.project_id
-  name     = var.random_certificate_suffix == true ? random_id.certificate[0].hex : "${var.name}-cert"
+  name     = "sami_islam_managed_certificate"
 
   lifecycle {
     create_before_destroy = true
