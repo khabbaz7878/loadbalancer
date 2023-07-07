@@ -44,11 +44,11 @@ resource "google_compute_region_network_endpoint_group" "negupdatedata2" {
   }
   project = var.project_id
 }
-resource "google_compute_backend_service" "backend_fetchData" {
+resource "google_compute_backend_service" "backendfetchData" {
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
   locality_lb_policy              = "ROUND_ROBIN"
-  name                            = "backend_fetchData"
+  name                            = "backendfetchData"
   port_name                       = "https"
   project                         = "sami-islam-project101-dev"
   protocol                        = "HTTPS"
@@ -62,7 +62,7 @@ resource "google_compute_backend_service" "backend_fetchData" {
     group = google_compute_region_network_endpoint_group.negfetchdata2.self_link
   }
 }
-resource "google_compute_backend_service" "backend_updateData" {
+resource "google_compute_backend_service" "backendupdateData" {
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
   locality_lb_policy              = "ROUND_ROBIN"
@@ -81,7 +81,7 @@ resource "google_compute_backend_service" "backend_updateData" {
   }
 }
 resource "google_compute_url_map" "samiloadbalancer" {
-  default_service = google_compute_backend_service.backend_fetchData.self_link
+  default_service = google_compute_backend_service.backendfetchData.self_link
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
     path_matcher = "path-matcher-fetchdata"
@@ -95,22 +95,22 @@ resource "google_compute_url_map" "samiloadbalancer" {
   name = "samiloadbalancer"
 
   path_matcher {
-    default_service = google_compute_backend_service.backend_fetchData.self_link
+    default_service = google_compute_backend_service.backendfetchData.self_link
     name            = "path-matcher-fetchdata"
 
     path_rule {
       paths   = ["/fetchdata"]
-      service = google_compute_backend_service.backend_fetchData.self_link
+      service = google_compute_backend_service.backendfetchData.self_link
     }
   }
 
   path_matcher {
-    default_service = google_compute_backend_service.backend_updateData.self_link
+    default_service = google_compute_backend_service.backendupdateData.self_link
     name            = "path-matcher-updatedata"
 
     path_rule {
       paths   = ["/updatedata"]
-      service = google_compute_backend_service.backend_updateData.self_link
+      service = google_compute_backend_service.backendupdateData.self_link
     }
   }
 
