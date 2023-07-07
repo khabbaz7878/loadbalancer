@@ -92,7 +92,7 @@ resource "google_compute_url_map" "samiloadbalancer" {
     path_matcher = "path-matcher-1"
   }
 
-  name = "samiloadbalancer"
+  name = "loadbalancertest"
 
   path_matcher {
     default_service = google_compute_backend_service.backendfetchdata.self_link
