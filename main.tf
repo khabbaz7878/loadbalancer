@@ -8,12 +8,47 @@ resource "google_compute_global_forwarding_rule" "testport" {
   project               = "sami-islam-project101-dev"
   target                = "https://www.googleapis.com/compute/beta/projects/sami-islam-project101-dev/global/targetHttpsProxies/samiloadbalancer-target-proxy"
 }
+resource "google_compute_region_network_endpoint_group" "neg1" {
+  name                  = "neg1"
+  network_endpoint_type = "SERVERLESS"
+  region                = "us-central1"
+  cloud_function {
+    function = "function1"
+  }
+}
+resource "google_compute_region_network_endpoint_group" "neg2" {
+  name                  = "neg2"
+  network_endpoint_type = "SERVERLESS"
+  region                = "northamerica-northeast1"
+  cloud_function {
+    function = "function2"
+  }
+}
 
+resource "google_compute_backend_service" "backend_fetchData" {
+  connection_draining_timeout_sec = 0
+  load_balancing_scheme           = "EXTERNAL_MANAGED"
+  locality_lb_policy              = "ROUND_ROBIN"
+  name                            = "bestbackend"
+  port_name                       = "http"
+  project                         = "sami-islam-project101-dev"
+  protocol                        = "HTTPS"
+  session_affinity                = "NONE"
+  timeout_sec                     = 30
+
+    backend {
+    group = google_compute_region_network_endpoint_group.neg1.self_link
+  }
+
+  backend {
+    group = google_compute_region_network_endpoint_group.neg2.self_link
+  }
+}
 resource "google_compute_url_map" "samiloadbalancer" {
-  default_service = "https://www.googleapis.com/compute/v1/projects/sami-islam-project101-dev/global/backendServices/bestbackend"
+  default_service = google_compute_backend_service.backend_fetchData.self_link
 
   host_rule {
-    hosts        = ["saksdslca"]
+    hosts        = ["srv.demoapp1.web.ca"]
     path_matcher = "path-matcher-2"
   }
 
@@ -46,14 +81,9 @@ resource "google_compute_url_map" "samiloadbalancer" {
 
   project = "sami-islam-project101-dev"
 }
-resource "google_compute_backend_service" "bestbackend" {
-  connection_draining_timeout_sec = 0
-  load_balancing_scheme           = "EXTERNAL_MANAGED"
-  locality_lb_policy              = "ROUND_ROBIN"
-  name                            = "bestbackend"
-  port_name                       = "http"
-  project                         = "sami-islam-project101-dev"
-  protocol                        = "HTTPS"
-  session_affinity                = "NONE"
-  timeout_sec                     = 30
+
+resource "google_compute_ssl_certificate" "newcertificate" {
+  project = var.project_id
+  certificate = var.certificate
+  private_key = var.private_key
 }
