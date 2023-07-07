@@ -1,4 +1,4 @@
-resource "google_compute_global_forwarding_rule" "testport" {
+/*resource "google_compute_global_forwarding_rule" "testport" {
   ip_address            = "34.117.32.104"
   ip_protocol           = "TCP"
   ip_version            = "IPV4"
@@ -7,11 +7,12 @@ resource "google_compute_global_forwarding_rule" "testport" {
   port_range            = "443-443"
   project               = "sami-islam-project101-dev"
   target                = "https://www.googleapis.com/compute/beta/projects/sami-islam-project101-dev/global/targetHttpsProxies/samiloadbalancer-target-proxy"
-}
+}*/
 resource "google_compute_region_network_endpoint_group" "negfetchdata1" {
   name                  = "negfetchdata1"
   network_endpoint_type = "SERVERLESS"
   region                = "us-central1"
+  project = var.project_id
   cloud_function {
     function = "function1"
   }
@@ -23,6 +24,7 @@ resource "google_compute_region_network_endpoint_group" "negfetchdata2" {
   cloud_function {
     function = "function2"
   }
+  project = var.project_id
 }
 resource "google_compute_region_network_endpoint_group" "negupdatedata1" {
   name                  = "negupdatedata1"
@@ -31,6 +33,7 @@ resource "google_compute_region_network_endpoint_group" "negupdatedata1" {
   cloud_function {
     function = "function1"
   }
+  project = var.project_id
 }
 resource "google_compute_region_network_endpoint_group" "negupdatedata2" {
   name                  = "negupdatedata2"
@@ -39,6 +42,7 @@ resource "google_compute_region_network_endpoint_group" "negupdatedata2" {
   cloud_function {
     function = "function1"
   }
+  project = var.project_id
 }
 resource "google_compute_backend_service" "backend_fetchData" {
   connection_draining_timeout_sec = 0
@@ -50,7 +54,7 @@ resource "google_compute_backend_service" "backend_fetchData" {
   protocol                        = "HTTPS"
   session_affinity                = "NONE"
   timeout_sec                     = 30
-
+  project_id=var.project_id
     backend {
     group = google_compute_region_network_endpoint_group.negfetchdata1.self_link
   }
@@ -69,7 +73,7 @@ resource "google_compute_backend_service" "backend_updateData" {
   protocol                        = "HTTPS"
   session_affinity                = "NONE"
   timeout_sec                     = 30
-
+  project_id=var.project_id
     backend {
     group = google_compute_region_network_endpoint_group.negupdatedata1.self_link
   }
@@ -80,7 +84,7 @@ resource "google_compute_backend_service" "backend_updateData" {
 }
 resource "google_compute_url_map" "samiloadbalancer" {
   default_service = google_compute_backend_service.backend_fetchData.self_link
-
+  project_id=var.project_id
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
     path_matcher = "path-matcher-fetchdata"
