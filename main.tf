@@ -89,7 +89,7 @@ resource "google_compute_url_map" "serverlesshttploadbalancer" {
 
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
-    path_matcher = "path-matcher-updatedata"
+    path_matcher = "path-matcher-fetchdata"
   }
 
   name = "serverlesshttploadbalancer"
