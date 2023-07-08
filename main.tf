@@ -2,7 +2,7 @@
 locals{
     cloud_functions_file_list = [for f in fileset("${path.module}/loadbalancerconfig", "[^_]*.yaml") : yamldecode(file("${path.module}/loadbalancerconfig/${f}"))]
 
-}
+
     cloud_functions_list=flatten([
       for cloud_function in local.cloud_functions_file_list:[
         for function in try(cloud_function.mobility_cloud_functions_list,[]):{
@@ -11,8 +11,8 @@ locals{
       ]
     ])
 
-
-module "neg_northamerica_northeast1" {
+}
+module "neg" {
   source = "./modules/networkendpointgroup"
   for_each={for function in local.cloud_functions_list: var.region => function}
   project=var.project_id
