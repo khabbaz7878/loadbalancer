@@ -6,7 +6,8 @@ locals{
     cloud_functions_list=flatten([
       for cloud_function in local.cloud_functions_file_list:[
         for function in try(cloud_function.mobility_cloud_functions_list,[]):{
-          name  = function.name
+          neg_name  = lower(function.name)
+          name=function.name
         }
       ]
     ])
@@ -17,7 +18,7 @@ module "neg" {
   source = "./networkendpointgroup"
   region        = ["northamerica-northeast1","us-central1"]
   for_each={for region,function in local.cloud_functions_list: region => function}
-  name=each.value.name
+  name=each.value.neg_name
   project_id=var.project_id
 
   function_name = each.value.name
