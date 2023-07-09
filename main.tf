@@ -1,4 +1,3 @@
-
 locals{
     cloud_functions_file_list = [for f in fileset("${path.module}/loadbalancerconfig", "[^_]*.yaml") : yamldecode(file("${path.module}/loadbalancerconfig/${f}"))]
 
@@ -20,9 +19,47 @@ module "neg" {
   for_each={for region,function in local.cloud_functions_list: region => function}
   name="neg-${each.value.neg_name}"
   project_id=var.project_id
-
   function_name = each.value.name
+}
 
+resource "google_compute_backend_service" "mobilitybackendservice" {
+  connection_draining_timeout_sec = 0
+  load_balancing_scheme           = "EXTERNAL_MANAGED"
+  locality_lb_policy              = "ROUND_ROBIN"
+  name                            = "backend-1"
+  port_name                       = "http"
+  project                         = "sami-islam-project101-dev"
+  protocol                        = "HTTPS"
+  session_affinity                = "NONE"
+  timeout_sec                     = 30
+    backend {
+    group = module.neg.neg_name_north_america.id.self_link
+  }
+
+  backend {
+    group = module.neg.neg_name_us_central.id.self_link
+  }
+  }
+
+/*
+module "backendservice" {
+  source = "./backendservice"
+  connection_draining_timeout_sec = 0
+  load_balancing_scheme           = "EXTERNAL_MANAGED"
+  locality_lb_policy              = "ROUND_ROBIN"
+  name                            = "backendfetchdata"
+  port_name                       = "http"
+  project                         = "sami-islam-project101-dev"
+  protocol                        = "HTTPS"
+  session_affinity                = "NONE"
+  timeout_sec                     = 30
+    backend {
+    group = module.neg.
+  }
+
+  backend {
+    group = google_compute_region_network_endpoint_group.negfetchdata2.self_link
+  }
 }
 /*
 locals {
@@ -138,6 +175,7 @@ resource "google_compute_region_network_endpoint_group" "negupdatedata2" {
   }
   project = var.project_id
 }
+
 resource "google_compute_backend_service" "defaultbackend" {
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
@@ -156,6 +194,9 @@ resource "google_compute_backend_service" "defaultbackend" {
     group = google_compute_region_network_endpoint_group.defaultneg2.self_link
   }
 }
+
+
+
 resource "google_compute_backend_service" "backendfetchdata" {
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
