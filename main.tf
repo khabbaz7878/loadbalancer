@@ -6,18 +6,21 @@ locals{
     cloud_functions_list=flatten([
       for cloud_function in local.cloud_functions_file_list:[
         for function in try(cloud_function.mobility_cloud_functions_list,[]):{
-          name="$neg${function}${var.region}"
+          name  = function.name
         }
       ]
     ])
 
 }
+
 module "neg" {
-  source = "./modules/networkendpointgroup"
-  for_each={for function in local.cloud_functions_list: var.region => function}
-  project=var.project_id
-  region        = each.region
-  function_name = each.value.function
+  source = "./networkendpointgroup"
+  region        = ["northamerica-northeast1","us-central1"]
+  for_each={for region,function in local.cloud_functions_list: region => function}
+  name=each.value.name
+  project_id=var.project_id
+
+  function_name = each.value.name
 
 }
 /*
@@ -189,9 +192,7 @@ resource "google_compute_backend_service" "backendupdatedata" {
   }
 }
 resource "google_compute_url_map" "serverlesshttploadbalancerfrontend" {
-  frontend {
-    name = "testport"
-  }
+
   default_service = google_compute_backend_service.backendfetchdata.self_link
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
