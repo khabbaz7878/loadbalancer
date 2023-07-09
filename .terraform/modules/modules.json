@@ -1,1 +1,1 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"neg","Source":"./modules/networkendpointgroup","Dir":""},{"Key":"neg_northamerica_northeast1","Source":"./modules/networkendpointgroup","Dir":""}]}
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"neg","Source":"./networkendpointgroup","Dir":"networkendpointgroup"},{"Key":"neg_northamerica_northeast1","Source":"./modules/networkendpointgroup","Dir":""}]}

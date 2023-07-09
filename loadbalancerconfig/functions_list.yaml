@@ -1,2 +1,2 @@
 mobility_cloud_functions_list:
-  -name: fetchdata
+  - name: fetchdata
