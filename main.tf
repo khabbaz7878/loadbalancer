@@ -71,7 +71,7 @@ resource "google_compute_url_map" "serverlesshttploadbalancerfrontend" {
   project = "sami-islam-project101-dev"
 }
 
-resource "google_compute_global_forwarding_rule" "frontendhttps" {
+/*resource "google_compute_global_forwarding_rule" "frontendhttps" {
   provider              = google-beta
   project               = var.project
   ip_protocol           = "HTTPS"
@@ -81,7 +81,7 @@ resource "google_compute_global_forwarding_rule" "frontendhttps" {
   port_range            = "443-443"
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
-
+*/
 resource "google_compute_managed_ssl_certificate" "default" {
   provider = google-beta
   project  = var.project_id
