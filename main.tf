@@ -71,7 +71,6 @@ resource "google_compute_url_map" "serverlesshttploadbalancerfrontend" {
   project = "sami-islam-project101-dev"
 }
 resource "google_compute_global_forwarding_rule" "frontend" {
-  ip_address            = "34.111.40.139"
   ip_protocol           = "TCP"
   ip_version            = "IPV4"
   load_balancing_scheme = "EXTERNAL_MANAGED"
