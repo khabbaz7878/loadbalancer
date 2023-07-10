@@ -1,3 +1,4 @@
 mobility_cloud_functions_list:
   - name: fetchData
   - name: deleteData
+  - name: createData
