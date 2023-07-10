@@ -79,7 +79,6 @@ resource "google_compute_global_forwarding_rule" "frontendhttps" {
   name                  = "mobility-loadbalancer-https"
   target                = google_compute_target_https_proxy.default[0].self_link
   port_range            = "443-443"
-  ip_version            = "IPV4"
   load_balancing_scheme = "EXTERNAL_MANAGED"
 }
 
