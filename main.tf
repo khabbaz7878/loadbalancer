@@ -71,7 +71,7 @@ resource "google_compute_url_map" "serverlesshttploadbalancerfrontend" {
   project = var.project_id
 }
 resource "google_compute_target_https_proxy" "default" {
-  project = var.project
+  project = var.project_id
   name    = "mobility-https-proxy"
   url_map = google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
 
