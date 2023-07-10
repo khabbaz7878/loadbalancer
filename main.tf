@@ -87,17 +87,6 @@ resource "google_compute_global_forwarding_rule" "serverlesshttploadbalancerfron
 }
 
 
-/*resource "google_compute_global_forwarding_rule" "frontendhttps" {
-  provider              = google-beta
-  project               = var.project
-  ip_protocol           = "HTTPS"
-  ip_version            = "IPV4"
-  name                  = "mobility-loadbalancer-https"
-  target                = google_compute_target_https_proxy.default[0].self_link
-  port_range            = "443-443"
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-}
-*/
 resource "google_compute_managed_ssl_certificate" "default" {
   provider = google-beta
   project  = var.project_id
@@ -111,18 +100,4 @@ resource "google_compute_managed_ssl_certificate" "default" {
     domains = var.managed_ssl_certificate_domains
   }
 }
-/*
-module "lb-http" {
-  source            = "GoogleCloudPlatform/lb-http/google//modules/serverless_negs"
-  version           = "~> 9.0"
-  https_redirect = true
-  project           = var.project_id
-  name              = "mobilityserverlessloadbalancer"
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-  ssl                             = true
-  managed_ssl_certificate_domains = var.managed_ssl_certificate_domains
-  url_map=google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
-  
-  backends = {google_compute_backend_service.mobilitybackendservice}
- }
-*/
+
