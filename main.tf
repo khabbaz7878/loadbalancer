@@ -78,6 +78,7 @@ resource "google_compute_global_forwarding_rule" "frontend" {
   name                  = "testport"
   port_range            = "443-443"
   project               = "sami-islam-project101-dev"
+  target                = default
   }
 
 resource "google_compute_managed_ssl_certificate" "default" {
