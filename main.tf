@@ -32,12 +32,12 @@ resource "google_compute_backend_service" "mobilitybackendservice" {
   protocol                        = "HTTPS"
   session_affinity                = "NONE"
   timeout_sec                     = 30
-    backend {
-    group = module.neg.neg_name_north_america.id.self_link
+  backend {
+    group = module.neg[0].neg_self_link_us_central
   }
 
   backend {
-    group = module.neg.neg_name_us_central.id.self_link
+    group = module.neg[0].neg_self_link_north_america
   }
   }
 
