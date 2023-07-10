@@ -75,6 +75,7 @@ resource "google_compute_target_https_proxy" "default" {
   name    = "mobility-https-proxy"
   url_map = google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
   ssl_certificates=var.managed_ssl_certificate_domains
+  certificate_map=google_compute_managed_ssl_certificate.default.self_link
 }
 resource "google_compute_global_forwarding_rule" "serverlesshttploadbalancerfrontend" {
   ip_protocol           = "TCP"
