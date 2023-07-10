@@ -104,3 +104,15 @@ resource "google_compute_managed_ssl_certificate" "default" {
     domains = var.managed_ssl_certificate_domains
   }
 }
+module "lb-http" {
+  source            = "GoogleCloudPlatform/lb-http/google//modules/serverless_negs"
+  version           = "~> 9.0"
+  https_redirect = true
+  project           = var.project_id
+  name              = "mobilityserverlessloadbalancer"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+  ssl                             = true
+  managed_ssl_certificate_domains = var.managed_ssl_certificate_domains
+  https_redirect                  = false
+  url_map=google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
+}
