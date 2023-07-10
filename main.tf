@@ -57,7 +57,7 @@ resource "google_compute_url_map" "serverlesshttploadbalancerfrontend" {
   name = "serverlesshttploadbalancer"
 
   path_matcher {
-    # default_service = google_compute_backend_service.defaultbackend.self_link
+  default_service = google_compute_backend_service.mobilitybackendservice[0].self_link
     name            = "path-matcher"
     dynamic "path_rule" {
       for_each = google_compute_backend_service.mobilitybackendservice
