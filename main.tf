@@ -1,128 +1,54 @@
-/*resource "google_compute_global_forwarding_rule" "testport" {
-  ip_address            = "34.117.32.104"
-  ip_protocol           = "TCP"
-  ip_version            = "IPV4"
-  load_balancing_scheme = "EXTERNAL_MANAGED"
-  name                  = "testport"
-  port_range            = "443-443"
-  project               = "sami-islam-project101-dev"
-  target                = "https://www.googleapis.com/compute/beta/projects/sami-islam-project101-dev/global/targetHttpsProxies/samiloadbalancer-target-proxy"
-}*/
-resource "google_compute_region_network_endpoint_group" "defaultneg1" {
-  name                  = "defaultneg1"
-  network_endpoint_type = "SERVERLESS"
-  region                = "us-central1"
-  cloud_function {
-    function = "function1"
-  }
-  project = var.project_id
+locals{
+    cloud_functions_file_list = [for f in fileset("${path.module}/loadbalancerconfig", "[^_]*.yaml") : yamldecode(file("${path.module}/loadbalancerconfig/${f}"))]
+
+
+    cloud_functions_list=flatten([
+      for cloud_function in local.cloud_functions_file_list:[
+        for function in try(cloud_function.mobility_cloud_functions_list,[]):{
+          neg_name  = lower(function.name)
+          name=function.name
+        }
+      ]
+    ])
+
 }
-resource "google_compute_region_network_endpoint_group" "defaultneg2" {
-  name                  = "defaultneg2"
-  network_endpoint_type = "SERVERLESS"
-  region                = "northamerica-northeast1"
-  cloud_function {
-    function = "function1"
-  }
-  project = var.project_id
+
+module "neg" {
+  source = "./networkendpointgroup"
+  region        = ["northamerica-northeast1","us-central1"]
+  for_each={for region,function in local.cloud_functions_list: region => function}
+  name="neg-${each.value.neg_name}"
+  project_id=var.project_id
+  function_name = each.value.name
 }
-resource "google_compute_region_network_endpoint_group" "negfetchdata1" {
-  name                  = "negfetchdata1"
-  network_endpoint_type = "SERVERLESS"
-  region                = "us-central1"
-  project = var.project_id
-  cloud_function {
-    function = "function1"
-  }
-}
-resource "google_compute_region_network_endpoint_group" "negfetchdata2" {
-  name                  = "negfetchdata2"
-  network_endpoint_type = "SERVERLESS"
-  region                = "northamerica-northeast1"
-  cloud_function {
-    function = "function2"
-  }
-  project = var.project_id
-}
-resource "google_compute_region_network_endpoint_group" "negupdatedata1" {
-  name                  = "negupdatedata1"
-  network_endpoint_type = "SERVERLESS"
-  region                = "us-central1"
-  cloud_function {
-    function = "function1"
-  }
-  project = var.project_id
-}
-resource "google_compute_region_network_endpoint_group" "negupdatedata2" {
-  name                  = "negupdatedata2"
-  network_endpoint_type = "SERVERLESS"
-  region                = "northamerica-northeast1"
-  cloud_function {
-    function = "function1"
-  }
-  project = var.project_id
-}
-resource "google_compute_backend_service" "defaultbackend" {
+
+resource "google_compute_backend_service" "mobilitybackendservice" {
+  for_each                        = { for index, instance in module.neg : index => {
+    neg_self_link_us_central = instance.neg_self_link_us_central
+    neg_self_link_north_america = instance.neg_self_link_north_america
+    function_name = instance.function_name
+  } }
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
   locality_lb_policy              = "ROUND_ROBIN"
-  name                            = "defaultbackend"
+  name                            = "backend-${each.value.function_name}"
   port_name                       = "http"
   project                         = "sami-islam-project101-dev"
   protocol                        = "HTTPS"
   session_affinity                = "NONE"
   timeout_sec                     = 30
-    backend {
-    group = google_compute_region_network_endpoint_group.defaultneg1.self_link
+  backend {
+    group = each.value.neg_self_link_us_central
   }
 
   backend {
-    group = google_compute_region_network_endpoint_group.defaultneg2.self_link
+    group = each.value.neg_self_link_north_america
   }
 }
-resource "google_compute_backend_service" "backendfetchdata" {
-  connection_draining_timeout_sec = 0
-  load_balancing_scheme           = "EXTERNAL_MANAGED"
-  locality_lb_policy              = "ROUND_ROBIN"
-  name                            = "backendfetchdata"
-  port_name                       = "http"
-  project                         = "sami-islam-project101-dev"
-  protocol                        = "HTTPS"
-  session_affinity                = "NONE"
-  timeout_sec                     = 30
-    backend {
-    group = google_compute_region_network_endpoint_group.negfetchdata1.self_link
-  }
 
-  backend {
-    group = google_compute_region_network_endpoint_group.negfetchdata2.self_link
-  }
-}
-resource "google_compute_backend_service" "backendupdatedata" {
-  connection_draining_timeout_sec = 0
-  load_balancing_scheme           = "EXTERNAL_MANAGED"
-  locality_lb_policy              = "ROUND_ROBIN"
-  name                            = "backendupdatedata"
-  port_name                       = "http"
-  project                         = "sami-islam-project101-dev"
-  protocol                        = "HTTPS"
-  session_affinity                = "NONE"
-  timeout_sec                     = 30
-    backend {
-    group = google_compute_region_network_endpoint_group.negupdatedata1.self_link
-  }
+resource "google_compute_url_map" "serverlesshttploadbalancerfrontend" {
 
-  backend {
-    group = google_compute_region_network_endpoint_group.negupdatedata2.self_link
-  }
-}
-resource "google_compute_url_map" "serverlesshttploadbalancer" {
-  default_service = google_compute_backend_service.backendfetchdata.self_link
-  host_rule {
-    hosts        = ["srv.demoapp1.web.ca"]
-    path_matcher = "path-matcher"
-  }
-
+  default_service = google_compute_backend_service.mobilitybackendservice[0].self_link
   host_rule {
     hosts        = ["srv.demoapp1.web.ca"]
     path_matcher = "path-matcher"
@@ -131,31 +57,30 @@ resource "google_compute_url_map" "serverlesshttploadbalancer" {
   name = "serverlesshttploadbalancer"
 
   path_matcher {
-    default_service = google_compute_backend_service.defaultbackend.self_link
+    # default_service = google_compute_backend_service.defaultbackend.self_link
     name            = "path-matcher"
+    dynamic "path_rule" {
+      for_each = google_compute_backend_service.mobilitybackendservice
+      content {
+        paths   = [ format("/%s", split("-", path_rule.value["name"])[1])]
+        service = path_rule.value["self_link"]
+      }
 
-    path_rule {
-      paths   = ["/fetchdata"]
-      service = google_compute_backend_service.backendfetchdata.self_link
     }
-    path_rule {
-      paths   = ["/updatedata"]
-      service = google_compute_backend_service.backendupdatedata.self_link
-    
-    }
-/*  }
-
-  path_matcher {
-    default_service = google_compute_backend_service.backendupdatedata.self_link
-    name            = "path-matcher-updatedata"
-
-    }*/
   }
-  
-
   project = "sami-islam-project101-dev"
 }
 
+resource "google_compute_global_forwarding_rule" "testport" {
+  ip_address            = "34.117.32.104"
+  ip_protocol           = "TCP"
+  ip_version            = "IPV4"
+  load_balancing_scheme = "EXTERNAL_MANAGED"
+  name                  = "testport"
+  port_range            = "443-443"
+  project               = "sami-islam-project101-dev"
+  target                = "https://www.googleapis.com/compute/beta/projects/sami-islam-project101-dev/global/targetHttpsProxies/samiloadbalancer-target-proxy"
+}
 
 resource "google_compute_managed_ssl_certificate" "default" {
   provider = google-beta

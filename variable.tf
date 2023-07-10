@@ -20,3 +20,7 @@ variable "managed_ssl_certificate_domains"{
   type        = list(string)
   default     = []
 }
+
+variable "region" {
+type = list(string) 
+}
