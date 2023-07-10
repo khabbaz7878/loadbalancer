@@ -71,16 +71,14 @@ resource "google_compute_url_map" "serverlesshttploadbalancerfrontend" {
   project = "sami-islam-project101-dev"
 }
 
-resource "google_compute_global_forwarding_rule" "testport" {
-  ip_address            = "34.117.32.104"
+resource "google_compute_global_forwarding_rule" "frontend" {
   ip_protocol           = "TCP"
   ip_version            = "IPV4"
   load_balancing_scheme = "EXTERNAL_MANAGED"
   name                  = "testport"
   port_range            = "443-443"
   project               = "sami-islam-project101-dev"
-  target                = "https://www.googleapis.com/compute/beta/projects/sami-islam-project101-dev/global/targetHttpsProxies/samiloadbalancer-target-proxy"
-}
+  }
 
 resource "google_compute_managed_ssl_certificate" "default" {
   provider = google-beta
