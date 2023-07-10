@@ -114,7 +114,7 @@ module "lb-http" {
   ssl                             = true
   managed_ssl_certificate_domains = var.managed_ssl_certificate_domains
   url_map=google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
-    backends = {
+ backends = {
     default = {
       protocol                        = "HTTPS"
       port_name                       = "http"
@@ -136,4 +136,5 @@ module "lb-http" {
         oauth2_client_id     = null
         oauth2_client_secret = null
       }
+}
 }
