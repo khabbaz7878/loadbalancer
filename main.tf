@@ -23,6 +23,10 @@ module "neg" {
 }
 
 resource "google_compute_backend_service" "mobilitybackendservice" {
+  for_each                        = { for index, instance in module.neg : index => {
+    neg_self_link_us_central = instance.neg_self_link_us_central
+    neg_self_link_north_america = instance.neg_self_link_north_america
+  } }
   connection_draining_timeout_sec = 0
   load_balancing_scheme           = "EXTERNAL_MANAGED"
   locality_lb_policy              = "ROUND_ROBIN"
@@ -33,11 +37,11 @@ resource "google_compute_backend_service" "mobilitybackendservice" {
   session_affinity                = "NONE"
   timeout_sec                     = 30
   backend {
-    group = module.neg[0].neg_self_link_us_central
+    group = each.value.neg_self_link_us_central
   }
 
   backend {
-    group = module.neg[0].neg_self_link_north_america
+    group = each.value.neg_self_link_north_america
   }
   }
 
