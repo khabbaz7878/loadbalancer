@@ -77,7 +77,7 @@ resource "google_compute_global_forwarding_rule" "serverlesshttploadbalancerfron
   name                  = "frontend"
   port_range            = "443-443"
   project               = "sami-islam-project101-dev"
-  target                =  google_compute_url_map.serverlesshttploadbalancer.self_link
+  target                =  google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
 }
 
 /*resource "google_compute_global_forwarding_rule" "frontendhttps" {
