@@ -68,7 +68,13 @@ resource "google_compute_url_map" "serverlesshttploadbalancerfrontend" {
 
     }
   }
-  project = "sami-islam-project101-dev"
+  project = var.project_id
+}
+resource "google_compute_target_https_proxy" "default" {
+  project = var.project
+  name    = "mobility-https-proxy"
+  url_map = google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
+
 }
 resource "google_compute_global_forwarding_rule" "serverlesshttploadbalancerfrontend" {
   ip_protocol           = "TCP"
@@ -77,8 +83,9 @@ resource "google_compute_global_forwarding_rule" "serverlesshttploadbalancerfron
   name                  = "frontend"
   port_range            = "443-443"
   project               = "sami-islam-project101-dev"
-  target                =  google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
+  target                =  google_compute_target_https_proxy.default.self_link
 }
+
 
 /*resource "google_compute_global_forwarding_rule" "frontendhttps" {
   provider              = google-beta
