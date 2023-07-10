@@ -1,3 +1,7 @@
+output "function_name" {
+   value = var.function_name
+}
+
 output "neg_name_north_america" {
     value = google_compute_region_network_endpoint_group.neg["northamerica-northeast1"].name
 }
