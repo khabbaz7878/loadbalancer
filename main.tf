@@ -113,6 +113,5 @@ module "lb-http" {
   load_balancing_scheme = "EXTERNAL_MANAGED"
   ssl                             = true
   managed_ssl_certificate_domains = var.managed_ssl_certificate_domains
-  https_redirect                  = false
   url_map=google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
 }
