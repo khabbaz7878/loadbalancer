@@ -4,7 +4,7 @@ resource "google_compute_region_network_endpoint_group" "neg" {
   for_each = toset(var.region)
   region = each.key
   cloud_function {
-    function = var.function_name
+    function = "${var.function_name}__${each.key}"
   }
   project = var.project_id
 }

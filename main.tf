@@ -11,15 +11,17 @@ locals{
       ]
     ])
 
+    regions = ["northamerica-northeast1","us-central1"]
+
 }
 
 module "neg" {
-  source = "./networkendpointgroup"
-  region        = ["northamerica-northeast1","us-central1"]
-  for_each={for region,function in local.cloud_functions_list: region => function}
-  name="neg-${each.value.neg_name}"
-  project_id=var.project_id
-  function_name = "${each.value.name}-${var.region[each.key]}"
+  source        = "./networkendpointgroup"
+  region        = local.regions
+  for_each      = {for index,function in local.cloud_functions_list: index => function}
+  name          = "neg-${each.value.neg_name}"
+  project_id    = var.project_id
+  function_name = each.value.name
 }
 
 resource "google_compute_backend_service" "mobilitybackendservice" {
