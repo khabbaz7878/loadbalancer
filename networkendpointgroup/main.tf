@@ -17,3 +17,4 @@ resource "google_compute_region_network_endpoint_group" "function_neg" {
     function = var.function_name
   }
 }*/
+
