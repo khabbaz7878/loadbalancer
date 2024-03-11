@@ -20,3 +20,4 @@ output "neg_self_link_us_central" {
 output "neg_self_link_north_america" {
   value = google_compute_region_network_endpoint_group.neg["northamerica-northeast1"].self_link
 }
+
