@@ -15,6 +15,7 @@ locals{
 
 }
 
+
 module "neg" {
   source        = "./networkendpointgroup"
   region        = local.regions
