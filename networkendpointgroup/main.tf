@@ -8,6 +8,15 @@ resource "google_compute_region_network_endpoint_group" "neg" {
   }
   project = var.project_id
 }
+
+resource "google_compute_global_forwarding_rule" "default"
+{name                  = "tcp-proxy-xlb-forwarding-rule"
+provider              = google-beta
+  ip_protocol           = "TCP"load_balancing_scheme = 
+"EXTERNAL"port_range            = "110"
+target               = google_compute_target_tcp_proxy.default.id
+  ip_address            = google_compute_global_address.default.id
+}
 /*
 resource "google_compute_region_network_endpoint_group" "function_neg" {
   name                  = "${var.prefix}-${var.region}-fct-neg"
