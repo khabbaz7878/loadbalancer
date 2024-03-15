@@ -1,15 +1,16 @@
-locals{
-    cloud_functions_file_list = [for f in fileset("${path.module}/loadbalancerconfig", "[^_]*.yaml") : yamldecode(file("${path.module}/loadbalancerconfig/${f}"))]
+locals {
+  cloud_functions_file_list = [for f in fileset("${path.module}/loadbalancerconfig", "[^_]*.yaml") : yamldecode(file("${path.module}/loadbalancerconfig/${f}"))]
 
+  cloud_functions_list = flatten([
+    for cloud_function in local.cloud_functions_file_list : [
+      for function in try(cloud_function.mobility_cloud_functions_list, []) : {
+        neg_name = lower(function.name)
+        name     = function.name  
+      }
+    ]
+  ])
+}
 
-    cloud_functions_list=flatten([
-      for cloud_function in local.cloud_functions_file_list:[
-        for function in try(cloud_function.mobility_cloud_functions_list,[]):{
-          neg_name  = lower(function.name)
-          name=function.name
-        }
-      ]
-    ])
 
     regions = ["northamerica-northeast1","us-central1"]
 
