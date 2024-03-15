@@ -1,6 +1,6 @@
 terraform {
  cloud {
-    organization = "sami600"
+    organization = "khabbaz7878"
     
     workspaces { 
       tags = ["loadbalancer"]
