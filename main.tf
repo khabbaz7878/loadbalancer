@@ -79,6 +79,11 @@ resource "google_compute_target_https_proxy" "default" {
   url_map = google_compute_url_map.serverlesshttploadbalancerfrontend.self_link
   ssl_certificates=[google_compute_managed_ssl_certificate.default.id]
 }
+
+resource "google_compute_global_address" "default_ip" {
+  name = "frontend-lb-ip"
+}
+
 resource "google_compute_global_forwarding_rule" "serverlesshttploadbalancerfrontend" {
   ip_protocol           = "TCP"
   ip_version            = "IPV4"
@@ -87,6 +92,9 @@ resource "google_compute_global_forwarding_rule" "serverlesshttploadbalancerfron
   port_range            = "443-443"
   project               = var.project_id
   target                =  google_compute_target_https_proxy.default.self_link
+  ip_address            = google_compute_global_address.default_ip.id
+
+  
 }
 
 
@@ -103,4 +111,3 @@ resource "google_compute_managed_ssl_certificate" "default" {
     domains = var.managed_ssl_certificate_domains
   }
 }
-
