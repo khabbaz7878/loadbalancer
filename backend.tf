@@ -3,7 +3,7 @@ terraform {
     organization = "khabbaz7878"
     
     workspaces { 
-      tags = ["loadbalancer"]
+      name = "loadbalancer"
     }
   }
 }
